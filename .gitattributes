@@ -1,3 +1,4 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+# Clean Jupyter Notebooks before uploading to Git
 *.ipynb filter=strip-notebook-output
