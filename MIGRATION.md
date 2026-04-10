@@ -28,24 +28,25 @@ A **GitHub Organization** named **LAF-US** is recommended to host both repos and
 
 ## Target Structure
 
+All content from the current public repos is merged **flat** into the root of `LAF-PUBLIC` — no per-project subdirectories. The goal is to break down silos entirely, not recreate them internally.
+
 ### LAF-PUBLIC
 
 ```
 LAF-PUBLIC/
 ├── README.md
-├── github-pages/          ← loganfinney27.github.io
-├── the-gemstone/          ← THE-GEMSTONE
-├── ir-court-tracker/      ← IR-Court-Tracker
-├── idex-artifacts/        ← IDEX_Artifacts
-└── py-tutorial/           ← PyTutorial (this repo)
+└── (all files from loganfinney27.github.io, THE-GEMSTONE, IR-Court-Tracker,
+    IDEX_Artifacts, and PyTutorial merged at root level)
 ```
+
+> **Note:** If two source repos contain a file with the same name, resolve the conflict manually during migration before committing.
 
 ### LAF-PRIVATE
 
 ```
 LAF-PRIVATE/
 ├── README.md
-└── idaho-vault/           ← IDAHO-VAULT (Obsidian archive)
+└── (all files from IDAHO-VAULT merged at root level)
 ```
 
 ---
@@ -66,33 +67,46 @@ LAF-PRIVATE/
 gh repo create LAF-US/LAF-PUBLIC --public --description "All public-facing LAF projects"
 ```
 
-### Step 3: Migrate each public repo into LAF-PUBLIC as a subdirectory
+### Step 3: Migrate each public repo into LAF-PUBLIC (flat — no subdirectories)
 
-Use `git subtree` to preserve commit history for each project:
+Merge each existing repo directly into the root of `LAF-PUBLIC`, preserving commit history:
 
 ```bash
 # Clone the new empty LAF-PUBLIC repo
 git clone https://github.com/LAF-US/LAF-PUBLIC.git
 cd LAF-PUBLIC
 
-# Add each existing repo as a remote and merge it into a subdirectory
+# Merge each existing repo directly at root level (no subdirectory)
 git remote add py-tutorial https://github.com/loganfinney27/PyTutorial.git
 git fetch py-tutorial
-git merge --allow-unrelated-histories py-tutorial/main  # optional: squash first
-# Move only the files that belong to this project (adjust list as needed):
-mkdir -p py-tutorial
-git mv main.ipynb input.txt output.csv requirements.txt MIGRATION.md py-tutorial/ 2>/dev/null || true
-git commit -m "chore: migrate PyTutorial into py-tutorial/"
+git merge --allow-unrelated-histories py-tutorial/main
+# Resolve any filename conflicts, then:
+git commit -m "chore: merge PyTutorial into LAF-PUBLIC"
 
-# Repeat for each remaining repo, creating a dedicated subdirectory each time:
-#   git remote add the-gemstone https://github.com/loganfinney27/THE-GEMSTONE.git
-#   git fetch the-gemstone && git merge --allow-unrelated-histories the-gemstone/main
-#   mkdir -p the-gemstone && git mv <files…> the-gemstone/
-#   git commit -m "chore: migrate THE-GEMSTONE into the-gemstone/"
-# (and so on for ir-court-tracker, idex-artifacts, github-pages)
+git remote add the-gemstone https://github.com/loganfinney27/THE-GEMSTONE.git
+git fetch the-gemstone
+git merge --allow-unrelated-histories the-gemstone/main
+git commit -m "chore: merge THE-GEMSTONE into LAF-PUBLIC"
+
+git remote add ir-court-tracker https://github.com/loganfinney27/IR-Court-Tracker.git
+git fetch ir-court-tracker
+git merge --allow-unrelated-histories ir-court-tracker/main
+git commit -m "chore: merge IR-Court-Tracker into LAF-PUBLIC"
+
+git remote add idex-artifacts https://github.com/loganfinney27/IDEX_Artifacts.git
+git fetch idex-artifacts
+git merge --allow-unrelated-histories idex-artifacts/main
+git commit -m "chore: merge IDEX_Artifacts into LAF-PUBLIC"
+
+git remote add github-pages https://github.com/loganfinney27/loganfinney27.github.io.git
+git fetch github-pages
+git merge --allow-unrelated-histories github-pages/main
+git commit -m "chore: merge loganfinney27.github.io into LAF-PUBLIC"
+
+git push origin main
 ```
 
-> **Tip:** If preserving full history is not important, you can simply copy the files into subdirectories without the remote merge step.
+> **Conflict resolution:** If two repos have a file with the same name (e.g., `README.md`), Git will flag a merge conflict. Manually combine the content, `git add` the resolved file, then commit before moving to the next repo.
 
 ### Step 4: Create the LAF-PRIVATE repository
 
@@ -100,7 +114,17 @@ git commit -m "chore: migrate PyTutorial into py-tutorial/"
 gh repo create LAF-US/LAF-PRIVATE --private --description "Private LAF projects and archives"
 ```
 
-Then migrate IDAHO-VAULT into `idaho-vault/` using the same `git subtree` approach.
+Then merge IDAHO-VAULT directly into the root of `LAF-PRIVATE`:
+
+```bash
+git clone https://github.com/LAF-US/LAF-PRIVATE.git
+cd LAF-PRIVATE
+git remote add idaho-vault https://github.com/loganfinney27/IDAHO-VAULT.git
+git fetch idaho-vault
+git merge --allow-unrelated-histories idaho-vault/main
+git commit -m "chore: merge IDAHO-VAULT into LAF-PRIVATE"
+git push origin main
+```
 
 ### Step 5: Archive the old repositories
 
@@ -120,13 +144,13 @@ Once migration is complete and verified:
 
 - [ ] Create GitHub Organization **LAF-US**
 - [ ] Create `LAF-PUBLIC` repo (public)
-- [ ] Migrate `loganfinney27.github.io` → `LAF-PUBLIC/github-pages/`
-- [ ] Migrate `THE-GEMSTONE` → `LAF-PUBLIC/the-gemstone/`
-- [ ] Migrate `IR-Court-Tracker` → `LAF-PUBLIC/ir-court-tracker/`
-- [ ] Migrate `IDEX_Artifacts` → `LAF-PUBLIC/idex-artifacts/`
-- [ ] Migrate `PyTutorial` → `LAF-PUBLIC/py-tutorial/`
+- [ ] Merge `loganfinney27.github.io` → `LAF-PUBLIC` (flat)
+- [ ] Merge `THE-GEMSTONE` → `LAF-PUBLIC` (flat)
+- [ ] Merge `IR-Court-Tracker` → `LAF-PUBLIC` (flat)
+- [ ] Merge `IDEX_Artifacts` → `LAF-PUBLIC` (flat)
+- [ ] Merge `PyTutorial` → `LAF-PUBLIC` (flat)
 - [ ] Create `LAF-PRIVATE` repo (private)
-- [ ] Migrate `IDAHO-VAULT` → `LAF-PRIVATE/idaho-vault/`
+- [ ] Merge `IDAHO-VAULT` → `LAF-PRIVATE` (flat)
 - [ ] Archive all original repositories
 - [ ] Update any external links/references
 
