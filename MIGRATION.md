@@ -9,7 +9,7 @@ Logan currently has several scattered public repositories. The goal is to consol
 | **LAF-PUBLIC** | All publicly shareable projects and work |
 | **LAF-PRIVATE** | Private, sensitive, or work-in-progress content |
 
-A **GitHub Organization** (e.g., `loganfinney27-lab` or `LAF-org`) is recommended to host both repos and enable cleaner access control, team collaboration, and branding. See [GitHub's guidance on Organizations](https://docs.github.com/en/organizations/collaborating-with-groups-in-organizations/about-organizations).
+A **GitHub Organization** named **LAF-US** is recommended to host both repos and enable cleaner access control, team collaboration, and branding. See [GitHub's guidance on Organizations](https://docs.github.com/en/organizations/collaborating-with-groups-in-organizations/about-organizations).
 
 ---
 
@@ -54,7 +54,7 @@ LAF-PRIVATE/
 
 ### Step 1: Create a GitHub Organization (optional but recommended)
 
-1. Go to [github.com/organizations/new](https://github.com/organizations/new) and create a free organization (e.g., `LAF-org` or `loganfinney27-projects`).
+1. Go to [github.com/organizations/new](https://github.com/organizations/new) and create a free organization named **`LAF-US`**.
 2. Transfer ownership of existing repos to the org, or create the new consolidated repos directly under the org.
 
 > **Why an Organization?** Organizations allow granular team permissions, separate billing, and a professional namespace. All repos remain under your control. See the [community discussion](https://github.com/orgs/community/discussions/143759) for more context.
@@ -62,8 +62,8 @@ LAF-PRIVATE/
 ### Step 2: Create the LAF-PUBLIC repository
 
 ```bash
-# On GitHub.com (or via gh CLI):
-gh repo create LAF-PUBLIC --public --description "All public-facing LAF projects"
+# On GitHub.com (or via gh CLI) — create under the LAF-US organization:
+gh repo create LAF-US/LAF-PUBLIC --public --description "All public-facing LAF projects"
 ```
 
 ### Step 3: Migrate each public repo into LAF-PUBLIC as a subdirectory
@@ -72,7 +72,7 @@ Use `git subtree` to preserve commit history for each project:
 
 ```bash
 # Clone the new empty LAF-PUBLIC repo
-git clone https://github.com/<your-username-or-org>/LAF-PUBLIC.git
+git clone https://github.com/LAF-US/LAF-PUBLIC.git
 cd LAF-PUBLIC
 
 # Add each existing repo as a remote and merge it into a subdirectory
@@ -97,7 +97,7 @@ git commit -m "chore: migrate PyTutorial into py-tutorial/"
 ### Step 4: Create the LAF-PRIVATE repository
 
 ```bash
-gh repo create LAF-PRIVATE --private --description "Private LAF projects and archives"
+gh repo create LAF-US/LAF-PRIVATE --private --description "Private LAF projects and archives"
 ```
 
 Then migrate IDAHO-VAULT into `idaho-vault/` using the same `git subtree` approach.
@@ -118,7 +118,7 @@ Once migration is complete and verified:
 
 ## Checklist
 
-- [ ] Create GitHub Organization (optional)
+- [ ] Create GitHub Organization **LAF-US**
 - [ ] Create `LAF-PUBLIC` repo (public)
 - [ ] Migrate `loganfinney27.github.io` → `LAF-PUBLIC/github-pages/`
 - [ ] Migrate `THE-GEMSTONE` → `LAF-PUBLIC/the-gemstone/`
