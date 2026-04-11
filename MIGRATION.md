@@ -17,12 +17,12 @@ A **GitHub Organization** named **LAF-US** is recommended to host both repos and
 
 | Repo | Visibility | Description | Target |
 |------|-----------|-------------|--------|
-| [loganfinney27.github.io](https://github.com/loganfinney27/loganfinney27.github.io) | Public | GitHub Pages personal site | LAF-PUBLIC |
-| [THE-GEMSTONE](https://github.com/loganfinney27/THE-GEMSTONE) | Public | Independent publication about Idaho | LAF-PUBLIC |
-| [IR-Court-Tracker](https://github.com/loganfinney27/IR-Court-Tracker) | Public | Idaho Reports court tracker (Python) | LAF-PUBLIC |
-| [IDEX_Artifacts](https://github.com/loganfinney27/IDEX_Artifacts) | Public | Idaho Experience "Our American Artifacts" (HTML) | LAF-PUBLIC |
-| [PyTutorial](https://github.com/loganfinney27/PyTutorial) | Public | Python learning playground (this repo) | LAF-PUBLIC |
-| [IDAHO-VAULT](https://github.com/loganfinney27/IDAHO-VAULT) | Public | Obsidian master archive | LAF-PRIVATE |
+| [loganfinney27.github.io](https://github.com/loganfinney27/loganfinney27.github.io) | Public | Standalone "Hello World" GitHub Pages site (`index.html` + `README.md`) | LAF-PUBLIC |
+| [THE-GEMSTONE](https://github.com/loganfinney27/THE-GEMSTONE) | Public | Quartz 4.0 static site fork — independent Idaho publication at `thegemstone.org`, self-deploys via GitHub Actions | LAF-PUBLIC |
+| [IR-Court-Tracker](https://github.com/loganfinney27/IR-Court-Tracker) | Public | Python scraper tracking Idaho federal court cases via CourtListener; daily GitHub Actions workflow auto-commits `output.csv` | LAF-PUBLIC |
+| [IDEX_Artifacts](https://github.com/loganfinney27/IDEX_Artifacts) | Public | Idaho Experience "Our American Memories" TV production artifacts (RESEARCH, MEDIA, PROJECTS, LOGISTICS, SCRIPTS) | LAF-PUBLIC |
+| [PyTutorial](https://github.com/loganfinney27/PyTutorial) | Public | Python learning playground with Jupyter notebooks and scripts | LAF-PUBLIC |
+| [IDAHO-VAULT](https://github.com/loganfinney27/IDAHO-VAULT) | Public* | Obsidian knowledge vault + master AI agent governance hub (1,000+ files, 20+ active workflows) — **currently public, must be moved to PRIVATE** | LAF-PRIVATE |
 
 ---
 
@@ -98,16 +98,159 @@ Both repos can be merged into LAF-PUBLIC independently. The `index.html` from `l
 | Filename | Repos that contain it |
 |---|---|
 | `README.md` | **All 5 public repos** — must be manually merged into one |
-| `.gitignore` | THE-GEMSTONE, IR-Court-Tracker, possibly others |
-| `package.json` / `package-lock.json` | THE-GEMSTONE (others TBC) |
-| `.github/workflows/*.yml` | THE-GEMSTONE (`deploy.yml`, `auto-merge.yml`) — check others |
+| `output.csv` | IR-Court-Tracker (actively written by daily workflow), PyTutorial (empty file) — decide which takes precedence |
+| `requirements.txt` | IR-Court-Tracker, PyTutorial — merge dependency lists, check for version conflicts |
+| `.gitignore` | THE-GEMSTONE, IR-Court-Tracker, IDEX_Artifacts, PyTutorial — merge into one combined `.gitignore` |
+| `.gitattributes` | THE-GEMSTONE, IR-Court-Tracker, PyTutorial |
+| `package.json` / `package-lock.json` | THE-GEMSTONE (Quartz build system — others TBC) |
+| `.github/workflows/*.yml` | THE-GEMSTONE (`deploy.yml`, `auto-merge.yml`), IR-Court-Tracker (`python-run.yml`) — check IDEX_Artifacts |
 | `index.html` | `loganfinney27.github.io` — check IDEX_Artifacts |
+| `AGENTS.md` | IR-Court-Tracker — check other repos before merging |
 
 Resolve each conflict before committing each repo merge.
 
 ### 5. Quartz upstream sync — ongoing consideration
 
 THE-GEMSTONE was set up to receive upstream patches from `jackyzha0/quartz`. After consolidation, the upstream remote in THE-GEMSTONE's Quartz fork history no longer exists as a separate repo. If upstream Quartz updates are needed in the future, they must be cherry-picked or merged directly into LAF-PUBLIC from the upstream Quartz repo.
+
+---
+
+## IDAHO-VAULT: Context and Broader Goals
+
+IDAHO-VAULT is far more than a personal notes archive. Understanding what it contains is essential for executing a safe migration.
+
+### What it is
+
+IDAHO-VAULT is a dual-purpose repository combining two deeply intertwined systems:
+
+1. **An Obsidian.md personal knowledge vault** — 1,000+ Markdown files organized mostly flat at the repo root. Topics span Idaho legislation, Idaho journalism research, court case notes, production artifacts from Idaho Public Television, personal organization, and reference notes.
+
+2. **The master governance hub for the "UNIFIED (US) SWARM"** — a multi-agent AI infrastructure Logan has built to assist his journalism and knowledge-management work. This is the brain that all other repos point back to.
+
+### The UNIFIED (US) SWARM
+
+IDAHO-VAULT is the single source of truth for an active swarm of AI agents working across Logan's repositories. Key governance files:
+
+| File | Purpose |
+|---|---|
+| `CONSTITUTION.md` | Root canonical constitution — binding governance for all agents |
+| `AGENTS.md` (root) | Cross-tool pointer auto-loaded by Codex CLI, Copilot, and Qodo |
+| `!/AGENTS.md` | Canonical narrative registry — agent roster, capability tiers, lane rules |
+| `swarm.json` | Machine-readable agent registry; contains hardcoded repo URLs |
+| `DECISIONS.md` | Logan-approved decisions log |
+| `!README.md` | Touchstone Tree — live orienting doctrine |
+| `!/agents.json` | Generated bootstrap index for local agent startup |
+| `!/agent.sh` | Local bootstrap entrypoint for agents |
+
+**Agent roster (from `!/AGENTS.md`):**
+
+| Agent | Persona | Role |
+|---|---|---|
+| Claude Code | The Abhorsen | Authority: Code — executor |
+| Gemini CLI | The Vault Advisor | Direct Write — interpreter |
+| OpenAI Codex | The Lexicographer | Scripting/Automation |
+| GitHub Copilot | The Clerk | Multi-Repo Admin |
+| Grok | The Ironist | Read/Analysis |
+| DeepSeek | The Analyst | Advisory |
+| Perplexity | The Scout | Research/Sourcing |
+| CrewAI layer | Python orchestration | Active re-foundation |
+
+Per-agent configuration lives in dotfolders: `.claude/`, `.gemini/`, `.codex/`, `.grok/`, `.deepseek/`, `.perplexity/`, `.crewai/`, etc. **These must survive the migration intact.**
+
+### Active GitHub Actions workflows in IDAHO-VAULT
+
+IDAHO-VAULT has 20+ active workflows — this is an active operations center, not a static archive:
+
+| Workflow | Function |
+|---|---|
+| `idaho-leg-scraper.yml` | Scrapes Idaho Legislature for new bills and updates vault |
+| `daily-rollover.yml` | Daily vault maintenance and file rollover |
+| `linear-brief.yml`, `linear-webhook.yml`, `linear-pr-sync.yml` | Linear project management integration (requires Linear API secrets) |
+| `budget-tracker-csv-export.yml` | Exports budget tracker data to CSV |
+| `vault-courier.yml`, `vault-ingest.yml` | Automated vault content routing and ingestion |
+| `wayback-preserve.yml`, `wayback-audit.yml` | Wayback Machine preservation for journalism sources |
+| `agent-review-gate.yml` | Gate for agent-submitted PRs — requires Logan's approval |
+| `auto-pr.yml`, `auto-merge.yml` | Automated PR creation and merge flows |
+| `branch-cleanup.yml`, `branch-garden-report.yml` | Git branch hygiene |
+| `check-portable-paths.yml` | Enforces NETWEB cross-platform path portability standard |
+| `1password-secret-template.yml` | 1Password secrets integration template |
+
+All of these workflows depend on secrets (Linear API token, 1Password credentials, GitHub token, etc.) that must be **re-authorized in LAF-US/LAF-PRIVATE** after migration.
+
+### Why IDAHO-VAULT must be PRIVATE
+
+IDAHO-VAULT is currently listed as a **public** repository, which is a security concern:
+- It contains agent configuration, capability tier definitions, and operational protocols
+- It contains personal budget data, project notes, and private journalism research
+- It contains `.github/CODEOWNERS`, issue templates, and swarm coordination scripts
+- `swarm.json` contains the machine-readable registry of all connectors and agents
+
+Moving it to `LAF-US/LAF-PRIVATE` as a **private** repo is the correct and necessary action.
+
+### Obsidian vault integrity post-migration
+
+IDAHO-VAULT's 1,000+ Obsidian notes use `[[wikilink]]` syntax for internal links. These resolve by filename — as long as the flat file structure is preserved, all internal links will continue to work after migration to LAF-PRIVATE.
+
+The `.obsidian/` folder (workspace config, plugins, themes) must be preserved intact. Per the vault's TRIPLEX protocol, this folder is owned by Claude (The Abhorsen) and must not be modified during migration.
+
+---
+
+## Suggested Improvements to Advance the Migration
+
+Based on review of all six repositories, the following improvements are recommended before executing the migration.
+
+### 1. Update `swarm.json` before merging IDAHO-VAULT
+
+`swarm.json` is the machine-readable agent registry and almost certainly contains hardcoded URLs pointing to `loganfinney27/IDAHO-VAULT`, `loganfinney27/IR-Court-Tracker`, etc. These will all break after migration. **Update `swarm.json` to reflect the new `LAF-US/LAF-PRIVATE` and `LAF-US/LAF-PUBLIC` URLs before or during the migration.**
+
+### 2. Update cross-repo governance links in public repos
+
+`IR-Court-Tracker/AGENTS.md` and `IR-Court-Tracker/README.md` contain hardcoded links to:
+- `github.com/loganfinney27/IDAHO-VAULT/blob/main/CONSTITUTION.md`
+- `github.com/loganfinney27/IDAHO-VAULT/blob/main/AGENTS.md`
+- `github.com/loganfinney27/IDAHO-VAULT/blob/main/!/AGENTS.md`
+
+These must be updated to point to `github.com/LAF-US/LAF-PRIVATE/blob/main/...` after migration. Check all other repos for similar hardcoded IDAHO-VAULT links.
+
+### 3. Migrate IDAHO-VAULT first (it is the governance backbone)
+
+Because all other repos depend on IDAHO-VAULT for agent governance, consider migrating IDAHO-VAULT to `LAF-US/LAF-PRIVATE` **before** migrating the public repos to LAF-PUBLIC. This ensures the governance backbone is stable before downstream repos are moved.
+
+### 4. Re-authorize all GitHub Actions secrets in LAF-PRIVATE
+
+IDAHO-VAULT's workflows require secrets that must be re-added to `LAF-US/LAF-PRIVATE` before any workflows run:
+- Linear API token (for linear-brief, linear-webhook, linear-pr-sync)
+- 1Password integration credentials
+- Wayback Machine API key (if applicable)
+- GitHub PAT or fine-grained token for cross-repo writes
+
+Go to **LAF-US/LAF-PRIVATE → Settings → Secrets and variables → Actions** and add each secret before enabling the workflows.
+
+### 5. Re-wire IR-Court-Tracker's daily workflow in LAF-PUBLIC
+
+`IR-Court-Tracker`'s `python-run.yml` runs daily and commits `output.csv` and `failed_urls.csv` back to the repository. After migration to LAF-PUBLIC:
+- Confirm `permissions: contents: write` is still set in the workflow
+- Confirm the workflow's `git commit` step references the correct repo and branch
+- Verify the `GITHUB_TOKEN` for `LAF-US/LAF-PUBLIC` has write access
+
+### 6. Resolve the `output.csv` naming collision
+
+Both IR-Court-Tracker and PyTutorial have `output.csv`. IR-Court-Tracker's file is **actively overwritten daily** by its workflow. PyTutorial's file is empty. Decide which file takes precedence and rename the other before merging.
+
+### 7. Clean `.DS_Store` from IDEX_Artifacts before merging
+
+IDEX_Artifacts has a `.DS_Store` file at the repo root (a macOS filesystem artifact that should never be committed). Remove it before the flat merge and add `.DS_Store` to LAF-PUBLIC's `.gitignore`.
+
+### 8. Create a LAF-US org-level PAT for agent automation
+
+The swarm's cross-repo automation (auto-pr, auto-merge, vault-courier, etc.) uses `GITHUB_TOKEN`. After moving to a GitHub Organization, consider creating a fine-grained organization-level PAT or a dedicated bot account (`laf-bot`) so cross-repo workflows don't depend on personal access tokens. Document this in `swarm.json` and `CONSTITUTION.md`.
+
+### 9. Set up branch protection and team permissions in LAF-US
+
+Once the org exists:
+- Enable **branch protection on `main`** for both LAF-PUBLIC and LAF-PRIVATE (require PR review before merge — Logan is sole approver)
+- Mirror the existing CODEOWNERS pattern from `IDAHO-VAULT/.github/CODEOWNERS` into the new repos
+- Apply the `SWARM` label in Linear to track the migration as an active workstream
 
 ---
 
@@ -186,11 +329,15 @@ After the merge, THE-GEMSTONE's Quartz deployment pipeline is now in LAF-PUBLIC.
 4. Confirm `quartz.config.ts` still has `baseUrl: "thegemstone.org"` — update if the domain changes.
 5. Push a commit to trigger the deploy workflow and verify the site loads at `thegemstone.org`.
 
-### Step 4: Create the LAF-PRIVATE repository
+### Step 4: Create the LAF-PRIVATE repository and migrate IDAHO-VAULT
+
+> **Recommended order:** Migrate IDAHO-VAULT to LAF-PRIVATE **first**, before the public repos. It is the governance backbone — getting it stable and at its new URL early reduces the window during which cross-repo governance links are broken.
 
 ```bash
 gh repo create LAF-US/LAF-PRIVATE --private --description "Private LAF projects and archives"
 ```
+
+Update `swarm.json` to replace all `loganfinney27/IDAHO-VAULT` URLs with `LAF-US/LAF-PRIVATE` before merging.
 
 Then merge IDAHO-VAULT directly into the root of `LAF-PRIVATE`:
 
@@ -203,6 +350,8 @@ git merge --allow-unrelated-histories idaho-vault/main
 git commit -m "chore: merge IDAHO-VAULT into LAF-PRIVATE"
 git push origin main
 ```
+
+After pushing, re-add all GitHub Actions secrets in **LAF-US/LAF-PRIVATE → Settings → Secrets and variables → Actions** (Linear API token, 1Password credentials, Wayback Machine key, GitHub PAT).
 
 ### Step 5: Archive the old repositories
 
@@ -221,8 +370,17 @@ Once migration is complete and verified:
 ## Checklist
 
 - [ ] Create GitHub Organization **LAF-US**
-- [ ] **Pre-flight:** Review conflict map (README.md, package.json, .gitignore, workflows, index.html)
+- [ ] Set up branch protection rules and CODEOWNERS in LAF-US org
+- [ ] Create LAF-US org-level PAT or bot account for swarm automation
+- [ ] **Pre-flight:** Review conflict map (README.md, output.csv, requirements.txt, .gitignore, .gitattributes, package.json, workflows, index.html, AGENTS.md)
 - [ ] **Pre-flight:** Note THE-GEMSTONE custom domain (`thegemstone.org`) and DNS settings
+- [ ] **Pre-flight:** Clean `.DS_Store` from IDEX_Artifacts; add to LAF-PUBLIC `.gitignore`
+- [ ] **Pre-flight:** Update `swarm.json` with new `LAF-US` repo URLs
+- [ ] **Pre-flight:** Resolve `output.csv` naming collision (IR-Court-Tracker vs PyTutorial)
+- [ ] Create `LAF-PRIVATE` repo (private)
+- [ ] Merge `IDAHO-VAULT` → `LAF-PRIVATE` (flat) — **migrate first as the governance backbone**
+- [ ] Re-authorize all IDAHO-VAULT GitHub Actions secrets in LAF-PRIVATE (Linear, 1Password, Wayback, etc.)
+- [ ] Verify Obsidian vault integrity: open LAF-PRIVATE in Obsidian and check wikilink graph
 - [ ] Create `LAF-PUBLIC` repo (public)
 - [ ] Merge `PyTutorial` → `LAF-PUBLIC` (flat)
 - [ ] Merge `THE-GEMSTONE` (Quartz fork) → `LAF-PUBLIC` (flat) — resolve build-system file conflicts
@@ -232,8 +390,8 @@ Once migration is complete and verified:
 - [ ] Enable GitHub Pages on LAF-PUBLIC (Source: GitHub Actions)
 - [ ] Re-configure custom domain `thegemstone.org` on LAF-PUBLIC and update DNS
 - [ ] Verify Quartz site builds and deploys from LAF-PUBLIC
-- [ ] Create `LAF-PRIVATE` repo (private)
-- [ ] Merge `IDAHO-VAULT` → `LAF-PRIVATE` (flat)
+- [ ] Re-wire IR-Court-Tracker daily workflow in LAF-PUBLIC and verify commits run
+- [ ] Update cross-repo governance links in IR-Court-Tracker (AGENTS.md, README.md) to point to LAF-PRIVATE
 - [ ] Archive all original repositories
 - [ ] Update any external links/references
 
